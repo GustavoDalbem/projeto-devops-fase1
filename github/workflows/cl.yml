@@ -1,0 +1,38 @@
+# Arquivo: .github/workflows/ci.yml
+
+name: CI Build
+
+on:
+  push:
+    branches:
+      - main        # Dispara o workflow quando houver push na branch main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest   # Usa o runner Ubuntu mais recente
+
+    steps:
+      # 1. Checkout do código-fonte
+      - name: Checkout do código
+        uses: actions/checkout@v2
+
+      # 2. Configurar Python
+      - name: Configurar Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'    # Define versão do Python (qualquer 3.x)
+
+      # 3. Instalar dependências
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+        # Mesmo que seja apenas pytest, esse passo garante instalação
+
+      # 4. Executar testes automatizados
+      - name: Executar testes com pytest
+        run: pytest
+        # Se algum teste falhar, o job será interrompido automaticamente
+
+      # 5. Relatório de status
+      - name: Exibir mensagem de sucesso
+        if: ${{ success() }}
+        run: echo "build ok"
